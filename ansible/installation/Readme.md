@@ -315,9 +315,6 @@ kubectl apply -f kubernetes-dashboard-auth.yaml
 kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
 ```
 
-使用token完成登录，如图
-
-![图片](./dashboard/dashboard-login.png)
 
 
 
