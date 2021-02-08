@@ -383,7 +383,3 @@ knode3    Ready    <none>   4d19h   v1.16.0
 
 ---
 
-作者：雨歌 
-请关注作者微信公众号：半路雨歌，支持作者持续创作，一起学习成长  
-![微信公众号](http://blog.jboost.cn/assets/qrcode-05.jpg)
-
