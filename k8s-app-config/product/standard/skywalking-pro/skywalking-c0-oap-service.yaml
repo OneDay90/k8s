@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: skywalking-c0-oap
+  labels:
+    wayne-app: skywalking-c0
+    wayne-ns: skywalking
+    app: skywalking-c0-oap
+  namespace: skywalking
+spec:
+  selector:
+    app: skywalking-c0-oap
+  ports:
+    - name: rest
+      port: 12800
+      protocol: TCP
+      targetPort: 12800
+    - name: grpc
+      port: 11800
+      protocol: TCP
+      targetPort: 11800
+  type: ClusterIP
+  sessionAffinity: None
+

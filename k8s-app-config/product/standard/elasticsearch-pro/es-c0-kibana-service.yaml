@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: es-c0-kibana-prod
+  namespace: elasticsearch
+  labels:
+    wayne-app: es-c0
+    wayne-ns: elasticsearch
+    app: es-c0-kibana-prod
+spec:
+  selector:
+    app: es-c0-kibana-prod
+  ports:
+    - name: http
+      port: 5601
+      targetPort: 5601
+      protocol: TCP
+  type: ClusterIP

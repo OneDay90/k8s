@@ -1,0 +1,80 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: apollo-configservice
+  namespace: apollo
+  labels:
+    inc-app: apollo-configservice
+spec:
+  serviceName: apollo-configservice
+  #生产配置 >=3
+  #replicas: 3
+  #测试配置
+  replicas: 1
+  selector:
+    matchLabels:
+      inc-app: apollo-configservice
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        inc-app: apollo-configservice
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    inc-app: apollo-configservice
+      volumes:
+        - name: apollo-configservice
+          configMap:
+            name: apollo-configservice
+            items:
+              - key: application-github.properties
+                path: application-github.properties
+      containers:
+        - name: apollo-configservice
+          image: >-
+            hpy253215039/apollo-config-server-skywalking6.4.0:1.4.0
+          securityContext:
+            privileged: false
+          imagePullPolicy: IfNotPresent
+          ports:
+            - protocol: TCP
+              containerPort: 8080
+          volumeMounts:
+            - name: apollo-configservice
+              mountPath: /apollo-config-server/config/application-github.properties
+              subPath: application-github.properties
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            timeoutSeconds: 1
+            failureThreshold: 10
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 1
+            failureThreshold: 10
+          envFrom:
+            - configMapRef:
+                name: apollo-configservice
+          resources:
+            limits:
+              memory: 2Gi
+              cpu: '1'
+            requests:
+              cpu: '0.1'
+              memory: 1Gi
+      #生产配置
+      #imagePullSecrets:
+      #  - name: inc

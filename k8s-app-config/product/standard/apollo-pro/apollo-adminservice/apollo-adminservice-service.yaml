@@ -1,0 +1,17 @@
+metadata:
+  name: apollo-adminservice
+  labels:
+    inc-app: apollo-adminservice
+  namespace: inc
+spec:
+  selector:
+    inc-app: apollo-adminservice
+  ports:
+    - protocol: TCP
+      targetPort: 8090
+      port: 80
+      name: apollo-adminservice-80
+  type: ClusterIP
+  sessionAffinity: ClientIP
+apiVersion: v1
+kind: Service

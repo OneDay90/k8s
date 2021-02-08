@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rocketmq-c4-namesrv-prod-server
+  namespace: inc
+  labels:
+    wayne-app: rocketmq-c4-namesrv-prod
+    wayne-ns: inc
+    app: rocketmq-c4-namesrv-prod-server
+spec:
+  selector:
+    app: rocketmq-c4-namesrv-prod-server
+  ports:
+    - protocol: TCP
+      port: 9876
+      targetPort: 9876
+      name: rocketmq-c4-namesrv-prod-server-9876
+  type: ClusterIP
+  clusterIP: None
+  sessionAffinity: ClientIP

@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: grafana-biz
+  namespace: monitoring
+spec:
+  serviceName: "grafana-biz"
+  selector:
+    matchLabels:
+      app: grafana-biz
+  template:
+    metadata:
+      labels:
+        app: grafana-biz
+    spec:
+      terminationGracePeriodSeconds: 10
+      initContainers:
+      - name: dashboards-clear
+        #存到你公司自己的镜像仓库，不要用docker官方仓库
+        image: alpine/git:1.0.7
+        command: ['sh', '-c', 'rm -rf k8s-app-config']
+        volumeMounts:
+        - name: pv-metrics-grafana
+          mountPath: /git
+      - name: dashboards-sync
+        #存到你公司自己的镜像仓库，不要用docker官方仓库
+        image: alpine/git:1.0.7
+        command: ['sh', '-c', 'git clone https://github.com/hepyu/k8s-app-config.git']
+        volumeMounts:
+        - name: pv-metrics-grafana
+          mountPath: /git
+      containers:
+      - name: grafana-biz
+        #存到你公司自己的镜像仓库，不要用docker官方仓库
+        image: grafana/grafana:6.4.2
+        ports:
+        - containerPort: 3000
+          name: grafana-biz
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1024Mi
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+        volumeMounts:
+        - name: pv-metrics-grafana
+          mountPath: /var/lib/grafana
+        env:	
+        #开启percona的dashboards，用于mysql监控dashboard显示，关闭，我们通过provisioning方式实现dashboard导入.
+        #- name: GF_INSTALL_PLUGINS
+        #  value: "percona-percona-app, grafana-piechart-panel"
+        - name: GF_INSTALL_PLUGINS
+          value: "grafana-piechart-panel"
+        - name: GF_PATHS_PROVISIONING
+          value: "/var/lib/grafana/k8s-app-config/product/standard/grafana-prometheus-pro/grafana/provisioning"
+        #- name: GF_PATHS_PLUGINS
+        #  value: ""
+      #生产环境打开，用自己镜像仓库的secrets
+      #imagePullSecrets:
+      #  - name: inc
+      volumes:
+      - name: pv-metrics-grafana
+        persistentVolumeClaim:
+          claimName: pv-metrics-grafana
+      - name: provision-dashboards
+        emptyDir: {}

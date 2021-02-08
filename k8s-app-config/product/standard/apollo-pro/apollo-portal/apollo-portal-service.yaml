@@ -1,0 +1,17 @@
+metadata:
+  name: apollo-portal
+  labels:
+    inc-app: apollo-portal
+  namespace: inc
+spec:
+  selector:
+    inc-app: apollo-portal
+  ports:
+    - protocol: TCP
+      targetPort: 8070
+      port: 80
+      name: apollo-portal-80
+  type: ClusterIP
+  sessionAffinity: ClientIP
+apiVersion: v1
+kind: Service

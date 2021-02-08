@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: grafana-biz
+  name: grafana-biz
+  namespace: monitoring
+spec:
+  rules:
+  - host: grafana.yunding.com
+    http:
+      paths:
+      - backend:
+          serviceName: grafana-biz
+          servicePort: 3000
+        path: /
+

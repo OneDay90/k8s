@@ -1,0 +1,13 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: sentinel-dashboard
+  namespace: sentinel
+  labels:
+    inc-app: sentinel-dashboard
+data:
+  JAVA_OPTS: >-
+    -Dserver.port=8080 -Dcsp.sentinel.dashboard.server=localhost:8080 -Dproject.name=sentinel-dashboard -Djava.security.egd=file:/dev/./urandom -Dcsp.sentinel.api.port=8719
+    -Duser.timezone=Asia/Shanghai -Dclient.encoding.override=UTF-8 -Dfile.encoding=UTF-8 
+    -Djava.security.egd=file:/dev/./urandom
+    -Dlogging.file=/data/logs/sentinel-dashboard-1.7.1.log -XX:HeapDumpPath=/data/logs/
